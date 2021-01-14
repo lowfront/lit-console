@@ -1,0 +1,34 @@
+{
+  "name": "lit-console",
+  "version": "0.0.1",
+  "description": "Slow but convenient browser log function. 16 color support.",
+  "main": "dist/index.js",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "start": "tsc --watch",
+    "build": "tsc"
+  },
+  "keywords": [
+    "browser",
+    "log",
+    "logging",
+    "console",
+    "rgb",
+    "cmyk",
+    "color",
+    "colors",
+    "text",
+    "debug"
+  ],
+  "author": {
+    "name": "lowfront",
+    "email": "fronterior@hotmail.com"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/lowfront/lit-console",
+  "bugs": {
+    "url": "https://github.com/lowfront/lit-console/issues"
+  }
+}
