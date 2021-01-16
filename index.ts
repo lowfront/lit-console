@@ -57,48 +57,60 @@ const logParser = (array: string[], params: any[]) => {
       styles.push(resetCSS);
     }
   });
-
-  console.log(result.join(' '), ...styles, ...params);
-};
-
-const core = () => {
-  const run: LitConsole = <LitConsole>function (...params: LitConsoleParameter) {
-    if (isTemplateLiterals(params)) {
-      run.__store__.push(String.raw(...<TemplateLiteralArray>params))
-    } else {
-      return logParser(run.__store__, params);
-    }
-
-    return run;
-  };
-  return run;
-}
-    
-const log: any = (...params: LitConsoleParameter) => {
-  if (isTemplateLiterals(params)) {
-    return Object.assign(
-      core(),
-      {__store__: [String.raw(...<TemplateLiteralArray>params)]},
-      defaultLogOptions,
-    );
-    
+  if (result.length) {
+    console.log(result.join(' '), ...styles, ...params);
   } else {
-    return logParser([], params);
+    console.log(...params);
   }
 };
 
-Object.keys(defaultLogOptions).forEach(key => {
-  const store: {__store__: Array<any>} = {__store__: []};
-  (log as any)[key] = (...params: LitConsoleParameter) => {
-    store.__store__ = [];
-    (defaultLogOptions as any)[key].bind(store)(...params);
-    
-    return Object.assign(
-      core(),
-      {__store__: store.__store__},
-      defaultLogOptions,
-    );
+export function createLog(customStyle: {[key: string]: string;} = {}) {
+  const customLogOptions = Object.keys(customStyle).reduce((acc, key) => Object.assign(acc, {[key]: createOptions(customStyle[key])}), {});
+  const mergedLogOptions = {...defaultLogOptions, ...customLogOptions};
+
+  const createCore = () => {
+    const core: LitConsole = <LitConsole>function (...params: LitConsoleParameter) {
+      if (isTemplateLiterals(params)) {
+        core.__store__.push(String.raw(...<TemplateLiteralArray>params))
+      } else {
+        return logParser(core.__store__, params);
+      }
+  
+      return core;
+    };
+    return core;
+  }
+      
+  const log: any = (...params: LitConsoleParameter) => {
+    if (isTemplateLiterals(params)) {
+      return Object.assign(
+        createCore(),
+        {__store__: [String.raw(...<TemplateLiteralArray>params)]},
+        mergedLogOptions,
+      );
+      
+    } else {
+      return logParser([], params);
+    }
   };
-});
+  
+  Object.keys(mergedLogOptions).forEach(key => {
+    const store: {__store__: Array<any>} = {__store__: []};
+    (log as any)[key] = (...params: LitConsoleParameter) => {
+      store.__store__ = [];
+      (mergedLogOptions as any)[key].bind(store)(...params);
+      
+      return Object.assign(
+        createCore(),
+        {__store__: store.__store__},
+        mergedLogOptions,
+      );
+    };
+  });
+
+  return log;
+}
+
+const log = createLog();
 
 export default log;
