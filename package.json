@@ -1,7 +1,7 @@
 {
   "name": "lit-console",
-  "version": "0.0.1",
-  "description": "Slow but convenient browser log function. 16 color support.",
+  "version": "0.0.2",
+  "description": "Slow but convenient browser log function using tagged templates grammar. 16 color support.",
   "main": "dist/index.js",
   "files": [
     "dist/**/*"
@@ -11,10 +11,13 @@
     "build": "tsc"
   },
   "keywords": [
-    "browser",
+    "console",
     "log",
     "logging",
-    "console",
+    "browser",
+    "template literals",
+    "template strings",
+    "tagged templates",
     "rgb",
     "cmyk",
     "color",
